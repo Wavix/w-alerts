@@ -7,7 +7,7 @@ env:
   GOARCH: amd64
 
 jobs:
-  lint:
+  build_and_test:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,13 +19,6 @@ jobs:
       with:
         version: latest
 
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-
     - name: Setup Go
       uses: actions/setup-go@v2
       with:
@@ -36,24 +29,12 @@ jobs:
         cp .env.example .env
         go test -v -coverprofile=coverage.txt -covermode=atomic
 
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-
-    - name: Setup Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.21
-
     - name: Build
       run: |
         CGO_ENABLED=0 go build -o build/
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v2
       with:
         name: build
         path: build
