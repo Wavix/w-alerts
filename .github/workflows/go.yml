@@ -7,7 +7,7 @@ env:
   GOARCH: amd64
 
 jobs:
-  build_and_test:
+  test_and_build:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,7 +34,7 @@ jobs:
         CGO_ENABLED=0 go build -o build/
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: build
         path: build
