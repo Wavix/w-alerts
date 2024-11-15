@@ -11,7 +11,7 @@ permissions:
   packages: write
 
 jobs:
-  test-and-build:
+  test-and-lint:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,14 +32,6 @@ jobs:
         run: |
           cp .env.example .env
           go test -v -coverprofile=coverage.txt -covermode=atomic
-
-      - name: Build
-        run: |
-          CGO_ENABLED=0 go build -o build/
-
-      - name: Archive build
-        run: |
-          zip -r build.zip build/
 
   release-linux-amd64:
     name: release linux/amd64
