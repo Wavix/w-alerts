@@ -14,12 +14,10 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
-    - name: Install golangci-lint
-      run: |
-        go get github.com/golangci/golangci-lint/cmd/golangci-lint
-
-    - name: Run linter
-      run: golangci-lint run
+    - name: Run golangci-lint
+      uses: golangci/golangci-lint-action@v2
+      with:
+        version: latest
 
   test:
     runs-on: ubuntu-latest
@@ -55,7 +53,7 @@ jobs:
         CGO_ENABLED=0 go build -o build/
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: build
         path: build
