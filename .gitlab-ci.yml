@@ -1,0 +1,44 @@
+image: "golang:1.21"
+
+stages:
+  - lint
+  - test
+  - build
+
+variables:
+  GOOS: linux
+  GOARCH: amd64
+
+lint:
+  stage: lint
+  image: golangci/golangci-lint:latest
+  allow_failure: false
+  script:
+    - golangci-lint run
+
+test:
+  stage: test
+  script:
+    - go get .
+    - cp .env.example .env
+    - go test -v -coverprofile=coverage.txt -covermode=atomic
+
+build:
+  stage: build
+  script:
+    - go get .
+    - CGO_ENABLED=0 go build -o build/
+  artifacts:
+    paths:
+      - build
+    expire_in: 1 week
+  only:
+    - branches
+    - tags
+
+cache:
+  paths:
+    - /go/src/github.com
+    - /go/src/golang.org
+    - /go/src/google.golang.org
+    - /go/src/gopkg.in

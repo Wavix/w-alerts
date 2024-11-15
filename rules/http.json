@@ -1,0 +1,21 @@
+{
+  "name": "My super service is not responding",
+  "description": "Error in the request to the super service public API. Status code: {}, country code: {}",
+  "interval": "3m",
+  "rules": [
+    {
+      "status": 200
+    },
+    {
+      "field": "body.country_code",
+      "operator": "eq",
+      "value": "AR"
+    }
+  ],
+  "request": {
+    "http": {
+      "url": "https://api.site.com/v1/validation?appid=XXX&type=format&phone_number=541152730593",
+      "method": "GET"
+    }
+  }
+}

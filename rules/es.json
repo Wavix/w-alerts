@@ -1,0 +1,28 @@
+{
+  "name": "Public API requests for /v2/messages more 10000 requests per 3m",
+  "index": "nginx-json-*",
+  "description": "Some description",
+  "period": "24h",
+  "interval": "3m",
+  "rules": [
+    {
+      "operator": "gt",
+      "value": 10000
+    }
+  ],
+  "request": {
+    "elastic": {
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "term": {
+                "url.keyword": "/v2/messages"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

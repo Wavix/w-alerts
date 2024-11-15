@@ -1,0 +1,45 @@
+[
+  {
+    "name": "Public API error rate for /v2/messages > 10% errors",
+    "index": "nginx-json-*",
+    "description": "The number of error requests to the API exceeds the threshold. Check the logs for more information. Count: {}, error rate: {}",
+    "period": "3m",
+    "interval": "3m",
+    "rules": [
+      {
+        "field": "aggregations.total_requests",
+        "operator": "gt",
+        "value": 5
+      },
+      {
+        "field": "aggregations.error_requests",
+        "field2": "aggregations.total_requests",
+        "operator": "gt",
+        "value": 0.1
+      }
+    ],
+    "request": {
+      "elastic": {
+        "query": {
+          "bool": {
+            "must": [{ "term": { "url.keyword": "/v3/messages" } }]
+          }
+        },
+        "aggs": {
+          "total_requests": {
+            "value_count": {
+              "field": "status"
+            }
+          },
+          "error_requests": {
+            "filter": {
+              "range": {
+                "status": { "gt": 499 }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+]
