@@ -1,13 +1,14 @@
 package main
 
 import (
-	"alerts/rule"
-	"alerts/utils"
 	"encoding/json"
 	"errors"
 	"io"
 	"os"
 	"slices"
+
+	"github.com/wavix/w-alerts/rule"
+	"github.com/wavix/w-alerts/utils"
 
 	"path/filepath"
 	"strings"

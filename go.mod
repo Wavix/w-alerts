@@ -1,4 +1,4 @@
-module alerts
+module github.com/wavix/w-alerts
 
 go 1.21.13
 

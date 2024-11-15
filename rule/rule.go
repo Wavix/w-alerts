@@ -1,9 +1,9 @@
 package rule
 
 import (
-	"alerts/types"
-	"alerts/utils"
 	"fmt"
+	"github.com/wavix/w-alerts/types"
+	"github.com/wavix/w-alerts/utils"
 	"path/filepath"
 	"sync"
 	"time"

@@ -1,8 +1,8 @@
 package api
 
 import (
-	"alerts/api/status"
-	"alerts/rule"
+	"github.com/wavix/w-alerts/api/status"
+	"github.com/wavix/w-alerts/rule"
 
 	"github.com/gin-gonic/gin"
 )

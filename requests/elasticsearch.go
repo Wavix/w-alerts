@@ -1,8 +1,6 @@
 package requests
 
 import (
-	"alerts/rule"
-	"alerts/types"
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
@@ -11,6 +9,9 @@ import (
 	"io"
 	"net/http"
 	"os"
+
+	"github.com/wavix/w-alerts/rule"
+	"github.com/wavix/w-alerts/types"
 )
 
 type ElasticResponse struct {

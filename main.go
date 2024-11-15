@@ -1,11 +1,6 @@
 package main
 
 import (
-	"alerts/api"
-	"alerts/requests"
-	"alerts/rule"
-	"alerts/types"
-	"alerts/utils"
 	"fmt"
 	"log"
 	"net/http"
@@ -13,6 +8,12 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/wavix/w-alerts/api"
+	"github.com/wavix/w-alerts/requests"
+	"github.com/wavix/w-alerts/rule"
+	"github.com/wavix/w-alerts/types"
+	"github.com/wavix/w-alerts/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"

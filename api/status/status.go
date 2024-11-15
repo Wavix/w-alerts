@@ -1,9 +1,10 @@
 package status
 
 import (
-	"alerts/rule"
-	"alerts/utils"
 	"net/http"
+
+	"github.com/wavix/w-alerts/rule"
+	"github.com/wavix/w-alerts/utils"
 
 	"github.com/gin-gonic/gin"
 )

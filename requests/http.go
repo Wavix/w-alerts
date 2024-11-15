@@ -1,14 +1,15 @@
 package requests
 
 import (
-	"alerts/rule"
-	"alerts/types"
 	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/wavix/w-alerts/rule"
+	"github.com/wavix/w-alerts/types"
 )
 
 type HttpResults struct {
