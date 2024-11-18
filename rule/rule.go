@@ -2,11 +2,12 @@ package rule
 
 import (
 	"fmt"
-	"github.com/wavix/w-alerts/types"
-	"github.com/wavix/w-alerts/utils"
 	"path/filepath"
 	"sync"
 	"time"
+
+	"github.com/wavix/w-alerts/types"
+	"github.com/wavix/w-alerts/utils"
 
 	"github.com/wavix/go-lib/logger"
 )
@@ -73,15 +74,26 @@ func (rule *Rule) AddElasticTimestampCondition() error {
 
 	query, ok := rule.Request.Elastic["query"].(map[string]interface{})
 	if !ok {
-		return fmt.Errorf("query is not map[string]interface{}")
+		rule.Request.Elastic["query"] = map[string]interface{}{
+			"bool": map[string]interface{}{
+				"must": []interface{}{rangeCondition},
+			},
+		}
+
+		return nil
 	}
 	boolQuery, ok := query["bool"].(map[string]interface{})
 	if !ok {
-		return fmt.Errorf("bool is not a map[string]interface{}")
+		boolQuery["bool"] = map[string]interface{}{
+			"must": []interface{}{rangeCondition},
+		}
+		return nil
 	}
 	must, ok := boolQuery["must"].([]interface{})
 	if !ok {
-		return fmt.Errorf("must is not []interface{}")
+		must = []interface{}{rangeCondition}
+		boolQuery["must"] = must
+		return nil
 	}
 
 	must = append(must, rangeCondition)
