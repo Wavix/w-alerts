@@ -55,7 +55,10 @@ func TestElasticSearchQueryWithTerm(t *testing.T) {
 		},
 	}
 
-	rule.AddElasticTimestampCondition()
+	err = rule.AddElasticTimestampCondition()
+	if err != nil {
+		t.Error(err)
+	}
 
 	output, err := json.Marshal(rule.Request.Elastic)
 	if err != nil {
@@ -109,7 +112,10 @@ func TestElasticSearchQueryMatchPhrase(t *testing.T) {
 		},
 	}
 
-	rule.AddElasticTimestampCondition()
+	err = rule.AddElasticTimestampCondition()
+	if err != nil {
+		t.Error(err)
+	}
 
 	output, err := json.Marshal(rule.Request.Elastic)
 	if err != nil {
