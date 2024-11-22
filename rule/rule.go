@@ -72,31 +72,43 @@ func (rule *Rule) AddElasticTimestampCondition() error {
 		},
 	}
 
+	if rule.Request.Elastic["query"] == nil {
+		rule.Request.Elastic["query"] = map[string]interface{}{}
+	}
+
 	query, ok := rule.Request.Elastic["query"].(map[string]interface{})
 	if !ok {
-		rule.Request.Elastic["query"] = map[string]interface{}{
-			"bool": map[string]interface{}{
-				"must": []interface{}{rangeCondition},
-			},
-		}
-
-		return nil
+		return fmt.Errorf("unexpected type for query, expected map[string]interface{}")
 	}
+
+	if query["bool"] == nil {
+		query["bool"] = map[string]interface{}{}
+	}
+
 	boolQuery, ok := query["bool"].(map[string]interface{})
 	if !ok {
-		boolQuery["bool"] = map[string]interface{}{
-			"must": []interface{}{rangeCondition},
-		}
-		return nil
+		return fmt.Errorf("unexpected type for bool, expected map[string]interface{}")
 	}
+
+	if boolQuery["must"] == nil {
+		boolQuery["must"] = []interface{}{}
+	}
+
 	must, ok := boolQuery["must"].([]interface{})
 	if !ok {
-		must = []interface{}{rangeCondition}
-		boolQuery["must"] = must
-		return nil
+		return fmt.Errorf("unexpected type for must, expected []interface{}")
 	}
 
 	must = append(must, rangeCondition)
+
+	if matchPhrase, ok := query["match_phrase"]; ok {
+		must = append(must, map[string]interface{}{
+			"match_phrase": matchPhrase,
+		})
+
+		delete(query, "match_phrase")
+	}
+
 	boolQuery["must"] = must
 
 	return nil
