@@ -37,6 +37,7 @@ require (
 require (
 	github.com/fatih/color v1.17.0 // indirect
 	github.com/gin-gonic/gin v1.10.0
+	github.com/go-playground/assert v1.2.1
 	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/joho/godotenv v1.5.1
 	github.com/mattn/go-colorable v0.1.13 // indirect
