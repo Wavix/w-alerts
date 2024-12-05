@@ -17,6 +17,12 @@ type HttpResults struct {
 	Body   map[string]interface{} `json:"body"`
 }
 
+var httpTransport = &http.Transport{
+	TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+}
+
+var httpClient = &http.Client{Transport: httpTransport}
+
 func ExecHttpRule(rule *rule.Rule) (types.RuleResponse, error) {
 	if rule.Request.Http == nil {
 		return nil, errors.New("rule does not have an http")
@@ -25,10 +31,6 @@ func ExecHttpRule(rule *rule.Rule) (types.RuleResponse, error) {
 	var bodyPayload io.Reader
 	method := "GET"
 
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	}
-
 	if rule.Request.Http.Body != nil {
 		bodyData, err := json.Marshal(rule.Request.Http.Body)
 		if err != nil {
@@ -36,8 +38,6 @@ func ExecHttpRule(rule *rule.Rule) (types.RuleResponse, error) {
 		}
 		bodyPayload = strings.NewReader(string(bodyData))
 	}
-
-	client := &http.Client{Transport: tr}
 
 	if rule.Request.Http.Method != nil {
 		method = strings.ToUpper(*rule.Request.Http.Method)
@@ -56,7 +56,7 @@ func ExecHttpRule(rule *rule.Rule) (types.RuleResponse, error) {
 		}
 	}
 
-	resp, err := client.Do(req)
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}

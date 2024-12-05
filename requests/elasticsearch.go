@@ -27,6 +27,13 @@ type Total struct {
 	Value int `json:"value,omitempty"`
 }
 
+var esTransport = &http.Transport{
+	TLSClientConfig:   &tls.Config{InsecureSkipVerify: true},
+	DisableKeepAlives: false,
+}
+
+var esClient = &http.Client{Transport: esTransport}
+
 type ResultWithAggregations struct {
 	Aggregations map[string]int `json:"aggregations"`
 	Value        *int           `json:"value"`
@@ -48,11 +55,6 @@ func ExecElasticRule(rule *rule.Rule) (types.RuleResponse, error) {
 	username := os.Getenv("ES_USER")
 	password := os.Getenv("ES_PASSWORD")
 
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	}
-	client := &http.Client{Transport: tr}
-
 	req, err := http.NewRequest("GET", url, bytes.NewBuffer(jsonData))
 	if err != nil {
 		return nil, err
@@ -61,7 +63,7 @@ func ExecElasticRule(rule *rule.Rule) (types.RuleResponse, error) {
 	req.Header.Set("Content-Type", "application/json")
 	req.SetBasicAuth(username, password)
 
-	resp, err := client.Do(req)
+	resp, err := esClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
