@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/wavix/w-alerts/rule"
 	"github.com/wavix/w-alerts/types"
@@ -32,7 +33,7 @@ var esTransport = &http.Transport{
 	DisableKeepAlives: false,
 }
 
-var esClient = &http.Client{Transport: esTransport}
+var esClient = &http.Client{Transport: esTransport, Timeout: 10 * time.Second}
 
 type ResultWithAggregations struct {
 	Aggregations map[string]int `json:"aggregations"`

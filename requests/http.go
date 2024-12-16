@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/wavix/w-alerts/rule"
 	"github.com/wavix/w-alerts/types"
@@ -21,7 +22,7 @@ var httpTransport = &http.Transport{
 	TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 }
 
-var httpClient = &http.Client{Transport: httpTransport}
+var httpClient = &http.Client{Transport: httpTransport, Timeout: 10 * time.Second}
 
 func ExecHttpRule(rule *rule.Rule) (types.RuleResponse, error) {
 	if rule.Request.Http == nil {
