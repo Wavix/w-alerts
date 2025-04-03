@@ -4,6 +4,7 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"strings"
+	"regexp"
 
 	"github.com/gofrs/uuid"
 )
@@ -70,7 +71,7 @@ func GenerateRuleUUID(fileName string, ruleName string) string {
 	return uuid.String()
 }
 
-func ReplacePlaceholders(template string, values []interface{}) string {
+func ReplacePlaceholders(template string, values []interface{}, responseData map[string]interface{}) string {
 	var result strings.Builder
 
 	if !strings.Contains(template, "{}") {
@@ -89,5 +90,16 @@ func ReplacePlaceholders(template string, values []interface{}) string {
 		}
 	}
 
+	re := regexp.MustCompile(`\{([^}]+)\}`)
+	matches := re.FindAllStringSubmatch(result.String(), -1)
+	for _, match := range matches {
+		placeholder := match[0]
+		keyPath := match[1]
+		if value, ok := GetValueFromMap(responseData, keyPath); ok {
+			resultStr := strings.Replace(result.String(), placeholder, fmt.Sprintf("%v", value), 1)
+			result.Reset()
+			result.WriteString(resultStr)
+		}
+	}
 	return result.String()
 }

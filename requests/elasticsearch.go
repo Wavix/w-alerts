@@ -16,12 +16,13 @@ import (
 )
 
 type ElasticResponse struct {
-	Aggregations map[string]map[string]int `json:"aggregations,omitempty"`
+	Aggregations map[string]interface{}    `json:"aggregations,omitempty"`
 	Hits         *Hits                     `json:"hits,omitempty"`
 }
 
 type Hits struct {
-	Total *Total `json:"total,omitempty"`
+    Total *Total                   `json:"total,omitempty"`
+    Hits  []map[string]interface{} `json:"hits,omitempty"`
 }
 
 type Total struct {
@@ -36,8 +37,8 @@ var esTransport = &http.Transport{
 var esClient = &http.Client{Transport: esTransport, Timeout: 10 * time.Second}
 
 type ResultWithAggregations struct {
-	Aggregations map[string]int `json:"aggregations"`
-	Value        *int           `json:"value"`
+	Aggregations map[string]interface{} `json:"aggregations"`
+	Value        *int                   `json:"value"`
 }
 
 func ExecElasticRule(rule *rule.Rule) (types.RuleResponse, error) {
@@ -86,22 +87,14 @@ func ExecElasticRule(rule *rule.Rule) (types.RuleResponse, error) {
 		return nil, errors.New("error unmarshalling ES response")
 	}
 
-	ResultWithAggregations := ResultWithAggregations{
-		Aggregations: make(map[string]int),
-		Value:        &response.Hits.Total.Value,
-	}
+    ResultWithAggregations := ResultWithAggregations{
+        Aggregations: response.Aggregations,
+        Value:        &response.Hits.Total.Value,
+    }
 
-	if len(response.Aggregations) > 0 {
-		for key, valueMap := range response.Aggregations {
-			if value, ok := valueMap["value"]; ok {
-				ResultWithAggregations.Aggregations[key] = value
-			}
-
-			if value, ok := valueMap["doc_count"]; ok {
-				ResultWithAggregations.Aggregations[key] = value
-			}
-		}
-	}
+    if len(response.Aggregations) > 0 {
+        ResultWithAggregations.Aggregations = response.Aggregations
+    }
 
 	result, err := structToMap(ResultWithAggregations)
 	if err != nil {

@@ -36,7 +36,7 @@ func (controller StatusController) GetStatus(context *gin.Context) {
 			status = "problem"
 		}
 
-		description := utils.ReplacePlaceholders(rule.Description, rule.RulesResults)
+		description := utils.ReplacePlaceholders(rule.Description, rule.RulesResults, rule.ResponseData)
 
 		response = append(response, RuleStatus{
 			UUID:        rule.UUID,

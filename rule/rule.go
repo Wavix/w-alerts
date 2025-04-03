@@ -27,6 +27,7 @@ type Rule struct {
 	Rules       []RuleCondition `json:"rules"`
 
 	RulesResults []interface{} `json:"rules_results"`
+	ResponseData map[string]interface{} `json:"response_data"`
 }
 
 type RuleRequest struct {
@@ -125,6 +126,7 @@ func (rule *Rule) GetIndex() string {
 }
 
 func (rule *Rule) ProcessResponse(response types.RuleResponse) {
+	rule.ResponseData = response
 	conditionsCount := len(rule.Rules)
 	triggeredConditions := 0
 
