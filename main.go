@@ -50,12 +50,6 @@ func ticker(registry *rule.Registry, done chan bool) {
 			utils.Logger.Info().Msg("Stopping the ticker")
 			return
 		case <-ticker.C:
-
-			// Hot reload rules in development mode only. In production, rules are loaded only once at startup
-			if os.Getenv("ENV") == "development" {
-				loadRules(registry)
-			}
-
 			process(registry)
 		}
 	}
@@ -63,6 +57,10 @@ func ticker(registry *rule.Registry, done chan bool) {
 
 func process(registry *rule.Registry) {
 	for _, rule := range registry.Rules {
+		if rule.IsStaticAlert {
+			continue
+		}
+
 		nextRunTimer := rule.GetNextRunAt()
 		if nextRunTimer.After(time.Now()) {
 			continue

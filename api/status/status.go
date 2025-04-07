@@ -1,4 +1,4 @@
-package status
+package api_status
 
 import (
 	"net/http"

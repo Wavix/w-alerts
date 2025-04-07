@@ -27,6 +27,10 @@ type Rule struct {
 	Rules       []RuleCondition `json:"rules"`
 
 	RulesResults []interface{} `json:"rules_results"`
+
+	// Rules added by api for display alerts in /status
+	// it's not in the config file and none-logical alert
+	IsStaticAlert bool
 }
 
 type RuleRequest struct {
