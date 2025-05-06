@@ -1,7 +1,9 @@
 package api_status
 
 import (
+	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/wavix/w-alerts/rule"
 	"github.com/wavix/w-alerts/utils"
@@ -38,9 +40,15 @@ func (controller StatusController) GetStatus(context *gin.Context) {
 
 		description := utils.ReplacePlaceholders(rule.Description, rule.RulesResults)
 
+		name := rule.Name
+
+		if rule.Scope != nil && *rule.Scope != "" {
+			name = fmt.Sprintf("[%s] %s", strings.ToUpper(*rule.Scope), rule.Name)
+		}
+
 		response = append(response, RuleStatus{
 			UUID:        rule.UUID,
-			Name:        rule.Name,
+			Name:        name,
 			Description: description,
 			Status:      status,
 		})

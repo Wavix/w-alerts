@@ -66,7 +66,7 @@ func loadRule(path string) (*[]rule.Rule, error) {
 		return nil, err
 	}
 
-	defer jsonFile.Close()
+	defer jsonFile.Close() // nolint:errcheck
 
 	jsonBytes, err := io.ReadAll(jsonFile)
 	if err != nil {

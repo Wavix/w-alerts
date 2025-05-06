@@ -41,7 +41,7 @@ func errorsFormat(validationErrors validator.ValidationErrors) map[string]string
 			err = fmt.Sprintf("%s=%s", err, f.Param())
 		}
 
-		err = strings.Replace(err, "required", "required field", -1)
+		err = strings.ReplaceAll(err, "required", "required field")
 
 		errs[camelToSnake(f.Field())] = err
 	}

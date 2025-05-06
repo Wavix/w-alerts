@@ -145,7 +145,8 @@ func loadEnvironmentVariables() {
 
 func getAllowIps() []string {
 	allowIps := make([]string, 1, 10)
-	allowIps[0] = "127.0.0.1"
+	allowIps = append(allowIps, "127.0.0.1")
+	allowIps = append(allowIps, "::1")
 
 	whitelist := os.Getenv("WHITELIST")
 	if whitelist == "" {
