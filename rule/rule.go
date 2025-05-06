@@ -19,6 +19,7 @@ type Rule struct {
 	IsFire       bool       `json:"is_fire"`
 
 	Name        string          `json:"name"`
+	Scope       *string         `json:"scope"`
 	Description string          `json:"description"`
 	Index       string          `json:"index"`
 	Period      string          `json:"period"`

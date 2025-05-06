@@ -11,10 +11,11 @@ import (
 )
 
 type RuleCreationPayload struct {
-	UUID        string `json:"uuid" binding:"required"`
-	Name        string `json:"name" binding:"required"`
-	Description string `json:"description" binding:"required"`
-	IsFire      bool   `json:"is_fire"`
+	UUID        string  `json:"uuid" binding:"required"`
+	Name        string  `json:"name" binding:"required"`
+	Description string  `json:"description" binding:"required"`
+	Scope       *string `json:"scope"`
+	IsFire      bool    `json:"is_fire"`
 }
 
 type RuleUpdatePayload struct {
@@ -40,11 +41,7 @@ func (controller RulesController) AddRule(context *gin.Context) {
 	}
 
 	now := time.Now().UTC()
-	isFire := false
-
-	if payload.IsFire {
-		isFire = true
-	}
+	isFire := payload.IsFire
 
 	if _, exists := controller.registry.Rules[payload.UUID]; exists {
 		controller.registry.RemoveRule(payload.UUID)
@@ -54,6 +51,7 @@ func (controller RulesController) AddRule(context *gin.Context) {
 		UUID:          payload.UUID,
 		Name:          payload.Name,
 		Description:   payload.Description,
+		Scope:         payload.Scope,
 		LastExecuted:  &now,
 		IsFire:        isFire,
 		IsStaticAlert: true,
@@ -61,7 +59,13 @@ func (controller RulesController) AddRule(context *gin.Context) {
 
 	controller.registry.AddRule(rule)
 
-	utils.Logger.Info().Msgf("Add static alert (UUID: %s, name: '%s')", payload.UUID, payload.Name)
+	logger := utils.Logger.Info()
+
+	if isFire {
+		logger = utils.Logger.Warn()
+	}
+
+	logger.Msgf("Add static alert (UUID: %s, name: '%s')", payload.UUID, payload.Name)
 	context.JSON(http.StatusOK, gin.H{"success": "true", "message": "Rule added successfully", "rule": payload})
 }
 
