@@ -61,6 +61,10 @@ Example of a response to the GET /status request:
         <td>Rule triggering frequency</td>
     </tr>
     <tr>
+        <td>scope</td>
+        <td>An optional attribute that will be used as a prefix in the title</td>
+    </tr>
+    <tr>
         <td>rules</td>
         <td>Array of conditions under which the rule triggers an alert</td>
     </tr>
