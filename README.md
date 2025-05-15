@@ -1,15 +1,10 @@
-# wAlerts
+# ElasticSearch Rule-Based Alert Engine
 
-This is an application that reads a directory with rules (RULES_DIR) every minute, runs a query, including data aggregation in ElasticSearch, and decides whether an alert has occurred or not based on the conditions specified inside.
+This application reads a directory containing rules (RULES_DIR) every minute, executes queries with data aggregation in ElasticSearch, and determines whether alerts should be triggered based on the conditions specified within these rules.
 
-The application does not have a database. In the development environment, you can add, modify, and delete rules, and the app will re-read them within a minute. In production mode, the application reads the rules once upon startup.
+The application operates without a database. The current system status is available via the GET /status endpoint, which can be used by monitoring tools such as Zabbix. Additionally, the application supports bundling multiple rules in a single file and http requests.
 
-The current registry state is available via GET /status for the zabbix agent (for ex.).
-
-Also, the application supports a bundle of rules in one file
-
-Example of a response to the GET /status request:
-
+### Example Response from GET /status:
 ```json
 {
   "status": [
@@ -25,53 +20,57 @@ Example of a response to the GET /status request:
 
 ## Features
 
-- flexible rules based on HTTP requests and Elasticsearch queries
-- alert/resolve; Current rule state in the status
-- ratio, count, status (http) requests and the ability to combine them
-- the state of all rules is available via REST API GET /status
-- aggregation queries and simple count queries
-- adding and editing rules without the need for a restart in develop mode
-- no database required
+- Flexible rule definitions supporting both HTTP requests and Elasticsearch queries.
+- Real-time alerting and resolution with the current rule state accessible via the `/status` endpoint.
+- Support for ratios, counts, and HTTP status checks, with the ability to combine multiple conditions.
+- REST API endpoint (`GET /status`) providing the state of all configured rules.
+- Compatibility with both aggregation-based and simple count-based Elasticsearch queries.
+- Dynamic rule management in development mode, allowing rules to be added or edited without restarting the application.
+- Operates without requiring a database, simplifying deployment and maintenance.
 
 ## Rule settings
 
+## Rule Configuration Options
+
+The following table describes the configuration options available for defining a rule:
+
 <table>
-    <tr>
-        <th>Option</th>
-        <th>Description</th>
-    </tr>
-    <tr>
-        <td>name</td>
-        <td>Problem name. It will be displayed in the status</td>
-    </tr>
-    <tr>
-        <td>description</td>
-        <td>Problem description. It will be displayed in the status</td>
-    </tr>
-    <tr>
-        <td>index</td>
-        <td>Index on which the ES query will be executed. * will be replaced with the current date</td>
-    </tr>
-    <tr>
-        <td>period</td>
-        <td>Period within which the rule (ES query) will be executed</td>
-    </tr>
-    <tr>
-        <td>interval</td>
-        <td>Rule triggering frequency</td>
-    </tr>
-    <tr>
-        <td>scope</td>
-        <td>An optional attribute that will be used as a prefix in the title</td>
-    </tr>
-    <tr>
-        <td>rules</td>
-        <td>Array of conditions under which the rule triggers an alert</td>
-    </tr>
-    <tr>
-        <td>request</td>
-        <td>ElasticSearch or Http request</td>
-    </tr>
+  <tr>
+    <th>Option</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><code>name</code></td>
+    <td>The name of the rule. This will be displayed in the status response.</td>
+  </tr>
+  <tr>
+    <td><code>description</code></td>
+    <td>A description of the rule. This will be displayed in the status response.</td>
+  </tr>
+  <tr>
+    <td><code>index</code></td>
+    <td>The Elasticsearch index on which the query will be executed. The <code>*</code> character will be replaced with the current date.</td>
+  </tr>
+  <tr>
+    <td><code>period</code></td>
+    <td>The time period within which the rule's Elasticsearch query will be executed.</td>
+  </tr>
+  <tr>
+    <td><code>interval</code></td>
+    <td>The frequency at which the rule will be triggered.</td>
+  </tr>
+  <tr>
+    <td><code>scope</code></td>
+    <td>An optional attribute that will be used as a prefix in the rule's title.</td>
+  </tr>
+  <tr>
+    <td><code>rules</code></td>
+    <td>An array of conditions that must be met for the rule to trigger an alert.</td>
+  </tr>
+  <tr>
+    <td><code>request</code></td>
+    <td>The Elasticsearch or HTTP request associated with the rule.</td>
+  </tr>
 </table>
 
 ## Example of an ES query with aggregation
