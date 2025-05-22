@@ -154,7 +154,7 @@
       let interval = 30;
 
       const fetchAlertStatus = () => {
-        fetch("/status")
+        fetch("./status")
           .then((response) => {
             if (!response.ok) {
               throw new Error("Network response was not ok");
