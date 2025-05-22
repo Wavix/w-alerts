@@ -27,6 +27,7 @@ The application operates without a database. The current system status is availa
 - Compatibility with both aggregation-based and simple count-based Elasticsearch queries.
 - Dynamic rule management in development mode, allowing rules to be added or edited without restarting the application.
 - Operates without requiring a database, simplifying deployment and maintenance.
+- Status page HTML interface for visual monitoring of alerts and system status.
 
 ## Rule settings
 
@@ -181,3 +182,24 @@ _Example of a query without aggregation:_
 ```
 
 If the status returned is not 200, or if the response attribute _body.country_code_ does not match "AR", the rule will transition to a _problem_ state.
+
+## Status Page HTML Interface
+
+The application includes a visual status page that provides a real-time overview of all system alerts. This interface is accessible via the web browser and automatically updates to show the current state of all alerts.
+
+### Features of the Status Page:
+
+- Clean, responsive interface showing the current status of all alerts
+- Separate section highlighting systems with issues
+- Auto-refresh functionality with configurable intervals (10s, 30s, 1min, 5min)
+- Visual indicators showing alert status (green for "ok", red for "problem")
+- Displays alert names and descriptions for easy identification
+- Manual refresh option for immediate status updates
+
+### How to Access:
+
+The status page is available at the root URL of the application (`/`) and serves the HTML interface from the `/public` directory.
+
+### Auto-Deployment:
+
+The status page HTML file is included in the release package along with the application binary when deployed using GitHub Actions.
