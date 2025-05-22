@@ -118,6 +118,14 @@ func setupRouter(registry *rule.Registry) *gin.Engine {
 	router.Use(utils.GinLogger())
 	controllers.Routes(router)
 
+	// Serve static files
+	router.Static("/static", "./public")
+
+	// Serve status page
+	router.GET("/", func(c *gin.Context) {
+		c.File("./public/status.html")
+	})
+
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"success": false, "message": "Route not found"})
 	})
