@@ -1,4 +1,4 @@
 .env
 coverage.txt
 build/
-static-rules.json
+.static_rules

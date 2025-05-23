@@ -357,5 +357,5 @@ func (registry *Registry) LoadStaticRules() {
 }
 
 func getStaticRulesFilePath() string {
-	return "./static-rules.json"
+	return fmt.Sprintf("%s/static-rules.json", os.Getenv("STATIC_RULES_DIR"))
 }
