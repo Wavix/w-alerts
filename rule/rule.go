@@ -307,9 +307,9 @@ func (registry *Registry) RemoveRule(uuid string) {
 	delete(registry.Rules, uuid)
 }
 
-func (r *Registry) SaveStaticRules() {
+func (registry *Registry) SaveStaticRules() {
 	staticRules := make([]Rule, 0)
-	for _, r := range r.Rules {
+	for _, r := range registry.Rules {
 		if !r.IsStaticAlert {
 			continue
 		}
@@ -331,6 +331,29 @@ func (r *Registry) SaveStaticRules() {
 	}
 
 	utils.Logger.Info().Msgf("Static rules saved to %v", filePath)
+}
+
+func (registry *Registry) LoadStaticRules() {
+	filePath := getStaticRulesFilePath()
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		return
+	}
+
+	jsonBytes, err := os.ReadFile(filePath)
+	if err != nil {
+		utils.Logger.Error().Msgf("Error reading static rules: %v", err)
+	}
+
+	var staticRules []Rule
+	err = json.Unmarshal(jsonBytes, &staticRules)
+	if err != nil {
+		utils.Logger.Error().Msgf("Error unmarshalling static rules: %v", err)
+		return
+	}
+
+	for _, r := range staticRules {
+		registry.AddRule(r)
+	}
 }
 
 func getStaticRulesFilePath() string {
