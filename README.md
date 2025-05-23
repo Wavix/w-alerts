@@ -25,7 +25,6 @@ The application operates without a database. The current system status is availa
 - Support for ratios, counts, and HTTP status checks, with the ability to combine multiple conditions.
 - REST API endpoint (`GET /status`) providing the state of all configured rules.
 - Compatibility with both aggregation-based and simple count-based Elasticsearch queries.
-- Dynamic rule management in development mode, allowing rules to be added or edited without restarting the application.
 - Operates without requiring a database, simplifying deployment and maintenance.
 - Status page HTML interface for visual monitoring of alerts and system status.
 
@@ -203,3 +202,40 @@ The status page is available at the root URL of the application (`/`) and serves
 ### Auto-Deployment:
 
 The status page HTML file is included in the release package along with the application binary when deployed using GitHub Actions.
+
+## API Management of Static Rules
+
+The application provides REST API endpoints for managing static alert rules. These endpoints allow you to programmatically create, update, and manage alert states without modifying rule files directly.
+
+### Available Endpoints:
+
+- **POST /api/rules** - Create or update a static alert rule
+  ```json
+  {
+    "uuid": "unique-rule-identifier",
+    "name": "Alert Name",
+    "description": "Alert Description",
+    "scope": "optional-scope",
+    "is_fire": false
+  }
+  ```
+
+- **PATCH /api/rules** - Update the alert state of an existing rule
+  ```json
+  {
+    "uuid": "unique-rule-identifier",
+    "is_fire": true
+  }
+  ```
+
+### Key Features:
+
+- Create and manage alert states through API calls
+- Static rules persist between application restarts
+- Rules created via API are marked with `isStaticAlert: true`
+- All static rules are stored in a file specified by the `STATIC_RULES_DIR` environment variable
+
+This API approach is particularly useful for:
+- Integration with external monitoring systems
+- Programmatic creation of temporary alerts
+- Managing operational status indicators
