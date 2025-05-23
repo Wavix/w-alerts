@@ -1,7 +1,9 @@
 package rule
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
 	"path/filepath"
 	"sync"
 	"time"
@@ -303,4 +305,34 @@ func (registry *Registry) RemoveRule(uuid string) {
 	defer registry.Mutex.Unlock()
 
 	delete(registry.Rules, uuid)
+}
+
+func (r *Registry) SaveStaticRules() {
+	staticRules := make([]Rule, 0)
+	for _, r := range r.Rules {
+		if !r.IsStaticAlert {
+			continue
+		}
+
+		staticRules = append(staticRules, *r)
+	}
+
+	filePath := getStaticRulesFilePath()
+	jsonBytes, err := json.Marshal(staticRules)
+	if err != nil {
+		utils.Logger.Error().Msgf("Error marshalling static rules: %v", err)
+		return
+	}
+
+	err = os.WriteFile(filePath, jsonBytes, 0644)
+	if err != nil {
+		utils.Logger.Error().Msgf("Error writing static rules: %v", err)
+		return
+	}
+
+	utils.Logger.Info().Msgf("Static rules saved to %v", filePath)
+}
+
+func getStaticRulesFilePath() string {
+	return "./static-rules.json"
 }
