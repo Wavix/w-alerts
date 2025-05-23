@@ -47,7 +47,7 @@ func (controller RulesController) AddRule(context *gin.Context) {
 		controller.registry.RemoveRule(payload.UUID)
 	}
 
-	rule := rule.Rule{
+	newRule := rule.Rule{
 		UUID:          payload.UUID,
 		Name:          payload.Name,
 		Description:   payload.Description,
@@ -57,7 +57,8 @@ func (controller RulesController) AddRule(context *gin.Context) {
 		IsStaticAlert: true,
 	}
 
-	controller.registry.AddRule(rule)
+	controller.registry.AddRule(newRule)
+	controller.registry.SaveStaticRules()
 
 	logger := utils.Logger.Info()
 
@@ -83,6 +84,8 @@ func (controller RulesController) UpdateRule(context *gin.Context) {
 
 	rule := controller.registry.Rules[payload.UUID]
 	rule.IsFire = payload.IsFire
+
+	controller.registry.SaveStaticRules()
 
 	context.JSON(http.StatusOK, gin.H{"success": "true", "message": "Rule successfully updated"})
 }

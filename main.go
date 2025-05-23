@@ -32,6 +32,7 @@ func main() {
 	}
 
 	loadRules(&registry)
+	registry.LoadStaticRules()
 
 	go process(&registry)
 	go ticker(&registry, done)
