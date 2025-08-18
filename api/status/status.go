@@ -20,6 +20,7 @@ type RuleStatus struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Status      string `json:"status"`
+	Severity    string `json:"severity"`
 }
 
 func NewController(registry *rule.Registry) StatusController {
@@ -31,26 +32,32 @@ func NewController(registry *rule.Registry) StatusController {
 func (controller StatusController) GetStatus(context *gin.Context) {
 	response := make([]RuleStatus, 0)
 
-	for _, rule := range controller.registry.Rules {
+	for _, r := range controller.registry.Rules {
 		status := "ok"
 
-		if rule.IsFire {
+		if r.IsFire {
 			status = "problem"
 		}
 
-		description := utils.ReplacePlaceholders(rule.Description, rule.RulesResults)
+		description := utils.ReplacePlaceholders(r.Description, r.RulesResults)
 
-		name := rule.Name
+		name := r.Name
 
-		if rule.Scope != nil && *rule.Scope != "" {
-			name = fmt.Sprintf("[%s] %s", strings.ToUpper(*rule.Scope), rule.Name)
+		if r.Scope != nil && *r.Scope != "" {
+			name = fmt.Sprintf("[%s] %s", strings.ToUpper(*r.Scope), r.Name)
+		}
+
+		severity := rule.RuleSeverityInfo
+		if r.Severity != nil {
+			severity = *r.Severity
 		}
 
 		response = append(response, RuleStatus{
-			UUID:        rule.UUID,
+			UUID:        r.UUID,
 			Name:        name,
 			Description: description,
 			Status:      status,
+			Severity:    string(severity),
 		})
 	}
 
