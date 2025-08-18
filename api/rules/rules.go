@@ -15,6 +15,7 @@ type RuleCreationPayload struct {
 	Name        string  `json:"name" binding:"required"`
 	Description string  `json:"description" binding:"required"`
 	Scope       *string `json:"scope"`
+	Severity    *string `json:"severity"`
 	IsFire      bool    `json:"is_fire"`
 }
 
@@ -42,6 +43,16 @@ func (controller RulesController) AddRule(context *gin.Context) {
 
 	now := time.Now().UTC()
 	isFire := payload.IsFire
+	severity := rule.RuleSeverityInfo
+
+	if payload.Severity != nil {
+		switch rule.RuleSeverity(*payload.Severity) {
+		case rule.RuleSeverityDisaster, rule.RuleSeverityWarning, rule.RuleSeverityInfo:
+			severity = rule.RuleSeverity(*payload.Severity)
+		default:
+			severity = rule.RuleSeverityInfo
+		}
+	}
 
 	if _, exists := controller.registry.Rules[payload.UUID]; exists {
 		controller.registry.RemoveRule(payload.UUID)
@@ -52,6 +63,7 @@ func (controller RulesController) AddRule(context *gin.Context) {
 		Name:          payload.Name,
 		Description:   payload.Description,
 		Scope:         payload.Scope,
+		Severity:      &severity,
 		LastExecuted:  &now,
 		IsFire:        isFire,
 		IsStaticAlert: true,

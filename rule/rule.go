@@ -20,14 +20,17 @@ type Rule struct {
 	LastExecuted *time.Time `json:"last_executed"`
 	IsFire       bool       `json:"is_fire"`
 
-	Name        string          `json:"name"`
-	Scope       *string         `json:"scope"`
-	Description string          `json:"description"`
-	Index       string          `json:"index"`
-	Period      string          `json:"period"`
-	Interval    string          `json:"interval"`
-	Request     RuleRequest     `json:"request"`
-	Rules       []RuleCondition `json:"rules"`
+	Name  string  `json:"name"`
+	Scope *string `json:"scope"`
+
+	Description string        `json:"description"`
+	Index       string        `json:"index"`
+	Period      string        `json:"period"`
+	Interval    string        `json:"interval"`
+	Severity    *RuleSeverity `json:"severity"`
+
+	Request RuleRequest     `json:"request"`
+	Rules   []RuleCondition `json:"rules"`
 
 	RulesResults []interface{} `json:"rules_results"`
 
@@ -35,6 +38,14 @@ type Rule struct {
 	// it's not in the config file and none-logical alert
 	IsStaticAlert bool
 }
+
+type RuleSeverity string
+
+const (
+	RuleSeverityDisaster RuleSeverity = "disaster"
+	RuleSeverityWarning  RuleSeverity = "warning"
+	RuleSeverityInfo     RuleSeverity = "information"
+)
 
 type RuleRequest struct {
 	Elastic map[string]interface{} `json:"elastic"`

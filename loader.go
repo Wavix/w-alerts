@@ -74,16 +74,21 @@ func loadRule(path string) (*[]rule.Rule, error) {
 	}
 
 	var rules []rule.Rule
-	var rule rule.Rule
+	var r rule.Rule
 
-	if err = json.Unmarshal(jsonBytes, &rule); err == nil {
+	if err = json.Unmarshal(jsonBytes, &r); err == nil {
 
-		err := rule.GetRule(path)
+		err := r.GetRule(path)
 		if err != nil {
 			return nil, err
 		}
 
-		rules = append(rules, rule)
+		if r.Severity == nil {
+			info := rule.RuleSeverityInfo
+			r.Severity = &info
+		}
+
+		rules = append(rules, r)
 
 	} else if err = json.Unmarshal(jsonBytes, &rules); err == nil {
 		for i := range rules {
@@ -91,6 +96,11 @@ func loadRule(path string) (*[]rule.Rule, error) {
 			err := rules[i].GetRule(path)
 			if err != nil {
 				return nil, err
+			}
+
+			if rules[i].Severity == nil {
+				info := rule.RuleSeverityInfo
+				rules[i].Severity = &info
 			}
 		}
 	} else {
